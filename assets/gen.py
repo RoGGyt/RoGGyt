@@ -11,6 +11,40 @@ def save(name, svg):
         f.write(svg)
 
 
+GH, GH_BORDER, GH_BAR = "#0d1117", "#21262d", "#161b22"
+
+
+def petal_rain(rnd, n, W, H, op=1.0, drift=(-160, 60), speed=(9, 17)):
+    out = []
+    for _ in range(n):
+        x0 = rnd.uniform(0, W)
+        dur = rnd.uniform(*speed)
+        delay = -rnd.uniform(0, dur)
+        dx = rnd.uniform(*drift)
+        sc = rnd.uniform(.6, 1.3)
+        shade = rnd.choice(["#e8e8e8", "#c8c8c8", "#ffffff", LAV_LIGHT])
+        out.append(
+            f'<g opacity="{rnd.uniform(.35,.9)*op:.2f}"><g>'
+            f'<animateTransform attributeName="transform" type="translate" values="{x0:.0f} -20; {x0+dx:.0f} {H+20}" dur="{dur:.1f}s" begin="{delay:.1f}s" repeatCount="indefinite"/>'
+            f'<path d="M0 0 C3 -4 8 -3 9 0 C8 3 3 4 0 0Z" fill="{shade}" transform="scale({sc:.2f})">'
+            f'<animateTransform attributeName="transform" type="rotate" values="0;360" dur="{rnd.uniform(3,7):.1f}s" repeatCount="indefinite" additive="sum"/></path>'
+            f'</g></g>')
+    return "".join(out)
+
+
+def corner_sakura(rnd, x, y, ang, size, depth, op):
+    b, f = tree(rnd, x, y, ang, size, depth, 2)
+    return (f'<g opacity="{op}"><g stroke="#6e6e6e" fill="none" stroke-linecap="round">{"".join(b)}</g>'
+            f'<g>{"".join(f)}</g></g>')
+
+
+def edge_fade(W, H, idp, top=.18, bottom=.22, side=.06):
+    return f'''<defs>
+ <linearGradient id="{idp}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{GH}"/><stop offset="{top}" stop-color="{GH}" stop-opacity="0"/><stop offset="{1-bottom}" stop-color="{GH}" stop-opacity="0"/><stop offset="1" stop-color="{GH}"/></linearGradient>
+ <linearGradient id="{idp}h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{GH}"/><stop offset="{side}" stop-color="{GH}" stop-opacity="0"/><stop offset="{1-side}" stop-color="{GH}" stop-opacity="0"/><stop offset="1" stop-color="{GH}"/></linearGradient>
+</defs><rect width="{W}" height="{H}" fill="url(#{idp}v)"/><rect width="{W}" height="{H}" fill="url(#{idp}h)"/>'''
+
+
 # ───────────────────────── header ─────────────────────────
 def branch(rnd, x, y, ang, length, width, depth, out_b, out_f):
     if depth == 0 or length < 6:
@@ -75,20 +109,7 @@ def header():
     rnd = random.Random(7)
     b1, f1 = tree(rnd, 1235, 330, math.radians(-128), 110, 7, 3)
     b2, f2 = tree(rnd, -40, 340, math.radians(-50), 95, 6, 3)
-    petals = []
-    for i in range(26):
-        x0 = rnd.uniform(0, W)
-        dur = rnd.uniform(9, 17)
-        delay = -rnd.uniform(0, dur)
-        drift = rnd.uniform(-160, 60)
-        s = rnd.uniform(.6, 1.3)
-        shade = rnd.choice(["#e8e8e8", "#c8c8c8", "#ffffff", LAV_LIGHT])
-        petals.append(
-            f'<g opacity="{rnd.uniform(.35,.9):.2f}"><g>'
-            f'<animateTransform attributeName="transform" type="translate" values="{x0:.0f} -20; {x0+drift:.0f} {H+20}" dur="{dur:.1f}s" begin="{delay:.1f}s" repeatCount="indefinite"/>'
-            f'<path d="M0 0 C3 -4 8 -3 9 0 C8 3 3 4 0 0Z" fill="{shade}" transform="scale({s:.2f})">'
-            f'<animateTransform attributeName="transform" type="rotate" values="0;360" dur="{rnd.uniform(3,7):.1f}s" repeatCount="indefinite" additive="sum"/></path>'
-            f'</g></g>')
+    petals = petal_rain(rnd, 26, W, H)
     name = "RoGGyt"
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
 <defs>
@@ -107,7 +128,7 @@ def header():
   .glow{{animation:pulse 5s ease-in-out infinite}} @keyframes pulse{{50%{{opacity:.55}}}}
  </style>
 </defs>
-<rect width="{W}" height="{H}" fill="url(#bg)"/>
+<rect width="{W}" height="{H}" fill="{GH}"/>
 <g stroke="#5c5c5c" fill="none" stroke-linecap="round">{"".join(b2)}</g><g>{"".join(f2)}</g>
 <g stroke="#6e6e6e" fill="none" stroke-linecap="round">{"".join(b1)}</g><g>{"".join(f1)}</g>
 <ellipse class="glow" cx="600" cy="150" rx="330" ry="120" fill="url(#glow)"/>
@@ -116,9 +137,9 @@ def header():
 <text class="t" x="600" y="166" text-anchor="middle" font-size="64" font-weight="700" fill="#f0f0f0" letter-spacing="6">{name}</text>
 <text class="t" x="600" y="206" text-anchor="middle" font-size="15" fill="#8a8a8a" letter-spacing="4">GAME DEV · WEB · ROBLOX · BLENDER</text>
 <text class="t" x="600" y="244" text-anchor="middle" font-size="14" fill="{LAV}">&gt; building things in the dark<tspan class="blink">_</tspan></text>
-{"".join(petals)}
+{petals}
 <rect width="{W}" height="{H}" fill="url(#grain)"/>
-<rect width="{W}" height="{H}" fill="url(#fade)"/>
+{edge_fade(W, H, "hf")}
 </svg>'''
 
 
@@ -164,9 +185,12 @@ def terminal():
     H = yc + 34
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
 <style>text{{font-family:{MONO};font-size:15px;white-space:pre}} .blink{{animation:b 1s steps(1) infinite}} @keyframes b{{50%{{opacity:0}}}}</style>
-<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12" fill="#0b0b0b" stroke="#262626"/>
-<path d="M1 13a12 12 0 0 1 12-12h{W-26}a12 12 0 0 1 12 12v23H1z" fill="#141414"/>
-<line x1="1" y1="36" x2="{W-1}" y2="36" stroke="#262626"/>
+<clipPath id="tb"><rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12"/></clipPath>
+<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12" fill="{GH}"/>
+<g clip-path="url(#tb)">{corner_sakura(random.Random(3), W+30, H+40, math.radians(-140), 52, 6, .17)}{petal_rain(random.Random(5), 12, W, H, op=.45, drift=(-120, 20), speed=(12, 20))}</g>
+<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12" fill="none" stroke="{GH_BORDER}"/>
+<path d="M1.5 13a11.5 11.5 0 0 1 11.5-11.5h{W-26}a11.5 11.5 0 0 1 11.5 11.5v23H1.5z" fill="{GH_BAR}"/>
+<line x1="1" y1="36" x2="{W-1}" y2="36" stroke="{GH_BORDER}"/>
 <circle cx="24" cy="19" r="5.5" fill="#3a3a3a"/><circle cx="43" cy="19" r="5.5" fill="#3a3a3a"/><circle cx="62" cy="19" r="5.5" fill="{LAV}" opacity=".8"/>
 <text x="{W/2}" y="24" text-anchor="middle" fill="#6e6e6e" style="font-size:12px">roggyt@sakura: ~</text>
 {"".join(body)}
@@ -174,12 +198,13 @@ def terminal():
 
 
 # ───────────────────────── project cards ─────────────────────────
-def card(title, desc, tags, status, progress, icon):
+def card(title, desc, tags, status, progress, icon, seed=1):
     W, H = 420, 170
+    rnd = random.Random(seed)
     tag_svg, x = [], 22
     for tg in tags:
         w = len(tg) * 7.4 + 18
-        tag_svg.append(f'<rect x="{x:.0f}" y="122" width="{w:.0f}" height="24" rx="12" fill="#161616" stroke="#2c2c2c"/><text x="{x + w/2:.0f}" y="138" text-anchor="middle" fill="#9a9a9a" font-size="12">{esc(tg)}</text>')
+        tag_svg.append(f'<rect x="{x:.0f}" y="122" width="{w:.0f}" height="24" rx="12" fill="{GH_BAR}" stroke="#30363d"/><text x="{x + w/2:.0f}" y="138" text-anchor="middle" fill="#9a9a9a" font-size="12">{esc(tg)}</text>')
         x += w + 8
     desc_lines = []
     words, line = desc.split(), ""
@@ -194,7 +219,10 @@ def card(title, desc, tags, status, progress, icon):
     bar = max(128 * progress, 4)
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
 <style>text{{font-family:{MONO}}} .p{{animation:p 2.4s ease-in-out infinite}} @keyframes p{{50%{{opacity:.35}}}} .bar{{transform-box:fill-box;transform-origin:0 50%;animation:g 1.6s ease-out both}} @keyframes g{{from{{transform:scaleX(0)}}}}</style>
-<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="#0b0b0b" stroke="#262626"/>
+<clipPath id="cb"><rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14"/></clipPath>
+<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{GH}"/>
+<g clip-path="url(#cb)">{corner_sakura(rnd, W+20, H+30, math.radians(-135), 36, 5, .2)}{petal_rain(rnd, 5, W, H, op=.4, drift=(-80, 10), speed=(8, 13))}</g>
+<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="none" stroke="{GH_BORDER}"/>
 <text x="22" y="44" font-size="20" fill="{LAV}">✦</text>
 <text x="54" y="44" fill="#f0f0f0" font-size="18" font-weight="700">{esc(title)}</text>
 <circle class="p" cx="{W-150}" cy="38" r="4" fill="{LAV}"/>
@@ -262,6 +290,6 @@ if __name__ == "__main__":
     save("header.svg", header())
     save("terminal.svg", terminal())
     save("heart.svg", heart())
-    save("card-slime-lab.svg", card("Slime Lab", "симулятор сбора слаймов для Roblox — для детей, яркий и залипательный", ["roblox", "luau", "simulator"], "in dev", .6, "🧪"))
-    save("card-pet-rng.svg", card("Pet RNG", "крути петов, они копают монеты, открывай локации и качай радиальное дерево апгрейдов", ["roblox", "luau", "rng"], "designing", .25, "🎲"))
+    save("card-slime-lab.svg", card("Slime Lab", "симулятор сбора слаймов для Roblox — для детей, яркий и залипательный", ["roblox", "luau", "simulator"], "in dev", .6, "🧪", seed=11))
+    save("card-pet-rng.svg", card("Pet RNG", "крути петов, они копают монеты, открывай локации и качай радиальное дерево апгрейдов", ["roblox", "luau", "rng"], "designing", .25, "🎲", seed=12))
     print("ok")
