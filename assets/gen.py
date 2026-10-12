@@ -155,7 +155,6 @@ def terminal():
         ("out", [("RoGGyt", "#f0f0f0"), (" — 18 y.o. developer", "#9a9a9a")]),
         ("cmd", "cat about.txt"),
         ("out", [("делаю игры на Roblox, сайты и 3D в Blender", "#c9c9c9")]),
-        ("out", [("люблю тёмные интерфейсы, анимации и ночные коммиты", "#c9c9c9")]),
         ("cmd", "ls ~/projects"),
         ("out", [("slime-lab/   ", LAV), ("pet-rng/", LAV)]),
         ("cmd", "cat stack.json"),
