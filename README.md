@@ -37,9 +37,5 @@
 </p>
 
 <p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=RoGGyt&bg_color=0d1117&color=c9c9c9&line=a99fd9&point=e6e6e6&area=true&area_color=1f1f1f&hide_border=true" width="100%"/>
-</p>
-
-<p align="center">
   <img src="./assets/heart.svg?v=3" alt="♥"/>
 </p>
