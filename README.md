@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/header.svg" width="100%" alt="RoGGyt"/>
+  <img src="./assets/header.svg?v=3" width="100%" alt="RoGGyt"/>
 </p>
 
 <p align="center">
@@ -9,14 +9,14 @@
 </p>
 
 <p align="center">
-  <img src="./assets/terminal.svg" width="860" alt="whoami"/>
+  <img src="./assets/terminal.svg?v=3" width="860" alt="whoami"/>
 </p>
 
 <h3 align="center"><code>✦ projects ✦</code></h3>
 
 <p align="center">
-  <img src="./assets/card-slime-lab.svg" width="420" alt="Slime Lab"/>
-  <img src="./assets/card-pet-rng.svg" width="420" alt="Pet RNG"/>
+  <img src="./assets/card-slime-lab.svg?v=3" width="420" alt="Slime Lab"/>
+  <img src="./assets/card-pet-rng.svg?v=3" width="420" alt="Pet RNG"/>
 </p>
 
 <h3 align="center"><code>✦ stack ✦</code></h3>
@@ -41,5 +41,5 @@
 </p>
 
 <p align="center">
-  <img src="./assets/heart.svg" alt="♥"/>
+  <img src="./assets/heart.svg?v=3" alt="♥"/>
 </p>
