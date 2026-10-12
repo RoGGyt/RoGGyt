@@ -17,9 +17,6 @@
 <p align="center">
   <img src="./assets/card-slime-lab.svg" width="420" alt="Slime Lab"/>
   <img src="./assets/card-pet-rng.svg" width="420" alt="Pet RNG"/>
-  <br/>
-  <img src="./assets/card-pitbike.svg" width="420" alt="Pitbike Stunt"/>
-  <img src="./assets/card-kege.svg" width="420" alt="КЕГЭ тренажёр"/>
 </p>
 
 <h3 align="center"><code>✦ stack ✦</code></h3>

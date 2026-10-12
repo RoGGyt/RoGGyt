@@ -136,7 +136,7 @@ def terminal():
         ("out", [("делаю игры на Roblox, сайты и 3D в Blender", "#c9c9c9")]),
         ("out", [("люблю тёмные интерфейсы, анимации и ночные коммиты", "#c9c9c9")]),
         ("cmd", "ls ~/projects"),
-        ("out", [("slime-lab/   ", LAV), ("pet-rng/   ", LAV), ("pitbike-stunt/   ", LAV), ("kege-site/", LAV)]),
+        ("out", [("slime-lab/   ", LAV), ("pet-rng/", LAV)]),
         ("cmd", "cat stack.json"),
         ("out", [('{ "lang": ', "#8a8a8a"), ('["luau", "ts", "js", "python"]', "#e6e6e6"), (', "tools": ', "#8a8a8a"), ('["roblox studio", "blender", "git"]', "#e6e6e6"), (" }", "#8a8a8a")]),
         ("cmd", "echo $STATUS"),
@@ -264,6 +264,4 @@ if __name__ == "__main__":
     save("heart.svg", heart())
     save("card-slime-lab.svg", card("Slime Lab", "симулятор сбора слаймов для Roblox — для детей, яркий и залипательный", ["roblox", "luau", "simulator"], "in dev", .6, "🧪"))
     save("card-pet-rng.svg", card("Pet RNG", "крути петов, они копают монеты, открывай локации и качай радиальное дерево апгрейдов", ["roblox", "luau", "rng"], "designing", .25, "🎲"))
-    save("card-pitbike.svg", card("Pitbike Stunt", "реалистичная стант-игра на питбайке с упором на вилли", ["roblox", "blender", "physics"], "concept", .15, "🏍"))
-    save("card-kege.svg", card("КЕГЭ тренажёр", "сайт для подготовки к ЕГЭ по информатике в терминальном стиле", ["web", "js", "ui"], "in dev", .5, "⌨"))
     print("ok")
