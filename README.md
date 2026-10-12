@@ -4,7 +4,6 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-online-a99fd9?style=flat-square&labelColor=0d1117"/>
-  <img src="https://komarev.com/ghpvc/?username=RoGGyt&style=flat-square&color=a99fd9&labelColor=0d1117&label=views"/>
   <img src="https://img.shields.io/github/followers/RoGGyt?style=flat-square&color=a99fd9&labelColor=0d1117&logo=github&logoColor=e6e6e6"/>
 </p>
 
