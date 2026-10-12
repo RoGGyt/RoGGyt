@@ -12,6 +12,15 @@ def save(name, svg):
 
 
 GH, GH_BORDER, GH_BAR = "#0d1117", "#21262d", "#161b22"
+TRANSPARENT = False  # toggled in __main__: transparent variants blend into any dark GitHub theme
+
+
+def bg():
+    return "none" if TRANSPARENT else GH
+
+
+def bar_bg():
+    return "#ffffff0d" if TRANSPARENT else GH_BAR
 
 
 def petal_rain(rnd, n, W, H, op=1.0, drift=(-160, 60), speed=(9, 17)):
@@ -43,6 +52,13 @@ def edge_fade(W, H, idp, top=.18, bottom=.22, side=.06):
  <linearGradient id="{idp}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{GH}"/><stop offset="{top}" stop-color="{GH}" stop-opacity="0"/><stop offset="{1-bottom}" stop-color="{GH}" stop-opacity="0"/><stop offset="1" stop-color="{GH}"/></linearGradient>
  <linearGradient id="{idp}h" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{GH}"/><stop offset="{side}" stop-color="{GH}" stop-opacity="0"/><stop offset="{1-side}" stop-color="{GH}" stop-opacity="0"/><stop offset="1" stop-color="{GH}"/></linearGradient>
 </defs><rect width="{W}" height="{H}" fill="url(#{idp}v)"/><rect width="{W}" height="{H}" fill="url(#{idp}h)"/>'''
+
+
+def edge_mask(W, H):
+    return ('<linearGradient id="emv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000"/><stop offset=".18" stop-color="#fff"/><stop offset=".78" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>'
+            '<linearGradient id="emh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000"/><stop offset=".06" stop-color="#fff"/><stop offset=".94" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>'
+            '<mask id="emh_m"><rect width="100%" height="100%" fill="url(#emh)"/></mask>'
+            f'<mask id="em" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="url(#emv)" mask="url(#emh_m)"/></mask>')
 
 
 # ───────────────────────── header ─────────────────────────
@@ -117,6 +133,7 @@ def header():
  <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="{LAV}" stop-opacity=".18"/><stop offset="1" stop-color="{LAV}" stop-opacity="0"/></radialGradient>
  <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{LAV_LIGHT}"/><stop offset=".55" stop-color="{LAV}"/><stop offset="1" stop-color="{LAV_DARK}"/></linearGradient>
  <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".9"/></linearGradient>
+ {edge_mask(W, H) if TRANSPARENT else ""}
  <pattern id="grain" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#fff" opacity=".035"/><rect x="2" y="3" width="1" height="1" fill="#fff" opacity=".025"/></pattern>
  <style>
   .t{{font-family:{MONO};}}
@@ -128,7 +145,7 @@ def header():
   .glow{{animation:pulse 5s ease-in-out infinite}} @keyframes pulse{{50%{{opacity:.55}}}}
  </style>
 </defs>
-<rect width="{W}" height="{H}" fill="{GH}"/>
+<rect width="{W}" height="{H}" fill="{bg()}"/>{"<g mask='url(#em)'>" if TRANSPARENT else ""}
 <g stroke="#5c5c5c" fill="none" stroke-linecap="round">{"".join(b2)}</g><g>{"".join(f2)}</g>
 <g stroke="#6e6e6e" fill="none" stroke-linecap="round">{"".join(b1)}</g><g>{"".join(f1)}</g>
 <ellipse class="glow" cx="600" cy="150" rx="330" ry="120" fill="url(#glow)"/>
@@ -138,8 +155,8 @@ def header():
 <text class="t" x="600" y="206" text-anchor="middle" font-size="15" fill="#8a8a8a" letter-spacing="4">GAME DEV · WEB · ROBLOX · BLENDER</text>
 <text class="t" x="600" y="244" text-anchor="middle" font-size="14" fill="{LAV}">&gt; building things in the dark<tspan class="blink">_</tspan></text>
 {petals}
-<rect width="{W}" height="{H}" fill="url(#grain)"/>
-{edge_fade(W, H, "hf")}
+{"" if TRANSPARENT else f'<rect width="{W}" height="{H}" fill="url(#grain)"/>'}
+{"</g>" if TRANSPARENT else edge_fade(W, H, "hf")}
 </svg>'''
 
 
@@ -185,10 +202,10 @@ def terminal():
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
 <style>text{{font-family:{MONO};font-size:15px;white-space:pre}} .blink{{animation:b 1s steps(1) infinite}} @keyframes b{{50%{{opacity:0}}}}</style>
 <clipPath id="tb"><rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12"/></clipPath>
-<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12" fill="{GH}"/>
+<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12" fill="{bg()}"/>
 <g clip-path="url(#tb)">{corner_sakura(random.Random(3), W+30, H+40, math.radians(-140), 52, 6, .17)}{petal_rain(random.Random(5), 12, W, H, op=.45, drift=(-120, 20), speed=(12, 20))}</g>
 <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="12" fill="none" stroke="{GH_BORDER}"/>
-<path d="M1.5 13a11.5 11.5 0 0 1 11.5-11.5h{W-26}a11.5 11.5 0 0 1 11.5 11.5v23H1.5z" fill="{GH_BAR}"/>
+<path d="M1.5 13a11.5 11.5 0 0 1 11.5-11.5h{W-26}a11.5 11.5 0 0 1 11.5 11.5v23H1.5z" fill="{bar_bg()}"/>
 <line x1="1" y1="36" x2="{W-1}" y2="36" stroke="{GH_BORDER}"/>
 <circle cx="24" cy="19" r="5.5" fill="#3a3a3a"/><circle cx="43" cy="19" r="5.5" fill="#3a3a3a"/><circle cx="62" cy="19" r="5.5" fill="{LAV}" opacity=".8"/>
 <text x="{W/2}" y="24" text-anchor="middle" fill="#6e6e6e" style="font-size:12px">roggyt@sakura: ~</text>
@@ -203,7 +220,7 @@ def card(title, desc, tags, status, progress, icon, seed=1):
     tag_svg, x = [], 22
     for tg in tags:
         w = len(tg) * 7.4 + 18
-        tag_svg.append(f'<rect x="{x:.0f}" y="122" width="{w:.0f}" height="24" rx="12" fill="{GH_BAR}" stroke="#30363d"/><text x="{x + w/2:.0f}" y="138" text-anchor="middle" fill="#9a9a9a" font-size="12">{esc(tg)}</text>')
+        tag_svg.append(f'<rect x="{x:.0f}" y="122" width="{w:.0f}" height="24" rx="12" fill="{bar_bg()}" stroke="#30363d"/><text x="{x + w/2:.0f}" y="138" text-anchor="middle" fill="#9a9a9a" font-size="12">{esc(tg)}</text>')
         x += w + 8
     desc_lines = []
     words, line = desc.split(), ""
@@ -219,7 +236,7 @@ def card(title, desc, tags, status, progress, icon, seed=1):
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">
 <style>text{{font-family:{MONO}}} .p{{animation:p 2.4s ease-in-out infinite}} @keyframes p{{50%{{opacity:.35}}}} .bar{{transform-box:fill-box;transform-origin:0 50%;animation:g 1.6s ease-out both}} @keyframes g{{from{{transform:scaleX(0)}}}}</style>
 <clipPath id="cb"><rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14"/></clipPath>
-<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{GH}"/>
+<rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="{bg()}"/>
 <g clip-path="url(#cb)">{corner_sakura(rnd, W+20, H+30, math.radians(-135), 36, 5, .2)}{petal_rain(rnd, 5, W, H, op=.4, drift=(-80, 10), speed=(8, 13))}</g>
 <rect x="1" y="1" width="{W-2}" height="{H-2}" rx="14" fill="none" stroke="{GH_BORDER}"/>
 <text x="22" y="44" font-size="20" fill="{LAV}">✦</text>
@@ -227,7 +244,7 @@ def card(title, desc, tags, status, progress, icon, seed=1):
 <circle class="p" cx="{W-150}" cy="38" r="4" fill="{LAV}"/>
 <text x="{W-140}" y="43" fill="{LAV}" font-size="12">{esc(status)}</text>
 {desc_svg}
-<rect x="{W-150}" y="54" width="128" height="4" rx="2" fill="#1f1f1f"/>
+<rect x="{W-150}" y="54" width="128" height="4" rx="2" fill="#ffffff14"/>
 <rect class="bar" x="{W-150}" y="54" width="{bar:.0f}" height="4" rx="2" fill="{LAV}"/>
 {"".join(tag_svg)}
 </svg>'''
@@ -285,10 +302,17 @@ def heart():
 </svg>'''
 
 
+def build(suffix):
+    save(f"header{suffix}.svg", header())
+    save(f"terminal{suffix}.svg", terminal())
+    save(f"heart{suffix}.svg", heart())
+    save(f"card-slime-lab{suffix}.svg", card("Slime Lab", "симулятор сбора слаймов для Roblox — для детей, яркий и залипательный", ["roblox", "luau", "simulator"], "in dev", .6, "🧪", seed=11))
+    save(f"card-pet-rng{suffix}.svg", card("Pet RNG", "крути петов, они копают монеты, открывай локации и качай радиальное дерево апгрейдов", ["roblox", "luau", "rng"], "designing", .25, "🎲", seed=12))
+
+
 if __name__ == "__main__":
-    save("header.svg", header())
-    save("terminal.svg", terminal())
-    save("heart.svg", heart())
-    save("card-slime-lab.svg", card("Slime Lab", "симулятор сбора слаймов для Roblox — для детей, яркий и залипательный", ["roblox", "luau", "simulator"], "in dev", .6, "🧪", seed=11))
-    save("card-pet-rng.svg", card("Pet RNG", "крути петов, они копают монеты, открывай локации и качай радиальное дерево апгрейдов", ["roblox", "luau", "rng"], "designing", .25, "🎲", seed=12))
+    TRANSPARENT = True
+    build("")
+    TRANSPARENT = False
+    build("-solid")
     print("ok")
